@@ -20,7 +20,7 @@ import wordcount.WordCount;
 import wordcount.WordCount.WordCountMapper;
 import wordcount.WordCount.WordCountReducer;
 
-public class CountReverseSortDriver extends Configured implements Tool{
+public class CountReverseSortDriver extends Configured implements Tool {
 
     @Override
     public int run(String[] strings) throws Exception {
@@ -56,6 +56,7 @@ public class CountReverseSortDriver extends Configured implements Tool{
             sortJob.setInputFormatClass(KeyValueTextInputFormat.class);
 
             sortJob.setSortComparatorClass(ReverseIntWritableComparator.class);
+            LOGGER.log(Level.INFO, "Sort Comparator Changed to : " + (sortJob.getSortComparator().getClass().getName()));
             sortJob.setJarByClass(ReverseSort.class);
             sortJob.setMapperClass(ReverseSortMapper.class);
             sortJob.setReducerClass(ReverseSortReducer.class);
