@@ -42,6 +42,7 @@ public class CountReverseSortDriver extends Configured implements Tool {
         countJob.setOutputKeyClass(Text.class);
         countJob.setOutputValueClass(IntWritable.class);
         countJob.setOutputFormatClass(TextOutputFormat.class);
+        countJob.setCombinerClass(WordCountReducer.class);
 
 
         FileInputFormat.addInputPath(countJob, new Path(inputPathString));
