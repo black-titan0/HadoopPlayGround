@@ -1,9 +1,9 @@
 package drivers;
 
-import comparators.ReverseIntWritableComparator;
+import comparators.ReverseLongWritableComparator;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
@@ -38,9 +38,9 @@ public class CountReverseSortDriver extends Configured implements Tool {
         countJob.setMapperClass(WordCountMapper.class);
         countJob.setReducerClass(WordCountReducer.class);
         countJob.setMapOutputKeyClass(Text.class);
-        countJob.setMapOutputValueClass(IntWritable.class);
+        countJob.setMapOutputValueClass(LongWritable.class);
         countJob.setOutputKeyClass(Text.class);
-        countJob.setOutputValueClass(IntWritable.class);
+        countJob.setOutputValueClass(LongWritable.class);
         countJob.setOutputFormatClass(TextOutputFormat.class);
         countJob.setCombinerClass(WordCountReducer.class);
 
@@ -56,15 +56,15 @@ public class CountReverseSortDriver extends Configured implements Tool {
             Job sortJob = Job.getInstance(getConf(), "Sort Job");
             sortJob.setInputFormatClass(KeyValueTextInputFormat.class);
 
-            sortJob.setSortComparatorClass(ReverseIntWritableComparator.class);
+            sortJob.setSortComparatorClass(ReverseLongWritableComparator.class);
             LOGGER.log(Level.INFO, "Sort Comparator Changed to : " + (sortJob.getSortComparator().getClass().getName()));
             sortJob.setJarByClass(ReverseSort.class);
             sortJob.setMapperClass(ReverseSortMapper.class);
             sortJob.setReducerClass(ReverseSortReducer.class);
-            sortJob.setMapOutputKeyClass(IntWritable.class);
+            sortJob.setMapOutputKeyClass(LongWritable.class);
             sortJob.setMapOutputValueClass(Text.class);
             sortJob.setOutputKeyClass(Text.class);
-            sortJob.setOutputValueClass(IntWritable.class);
+            sortJob.setOutputValueClass(LongWritable.class);
             sortJob.setOutputFormatClass(TextOutputFormat.class);
 
 
