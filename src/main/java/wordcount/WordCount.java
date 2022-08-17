@@ -19,7 +19,7 @@ public class WordCount {
         }
     }
 
-    public static  class WordCountReducer extends Reducer<Text, LongWritable, Text, LongWritable> {
+    public static class WordCountReducer extends Reducer<Text, LongWritable, Text, LongWritable> {
         @Override
         public void reduce(Text word, Iterable<LongWritable> values, Reducer<Text, LongWritable, Text, LongWritable>.Context context) throws InterruptedException, IOException {
             long sum = 0L;

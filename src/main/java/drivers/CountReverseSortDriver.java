@@ -30,15 +30,17 @@ public class CountReverseSortDriver extends Configured implements Tool {
         int res = ToolRunner.run(new CountReverseSortDriver(), args);
         System.exit(res);
     }
+
     static final Logger LOGGER = Logger.getLogger(CountReverseSortDriver.class);
+
     @Override
     public int run(String[] strings) throws Exception {
         LOGGER.log(Level.INFO, "CountReverseSortDriver Started!");
 
         String inputPathString = getConf().get(INPUT_PATH),
-                intermediatePath =  getConf().get(INTERMEDIATE_OUTPUT_PATH),
-                outputPathString =  getConf().get(FINAL_OUTPUT_PATH);
-        LOGGER.log(Level.INFO, "Input Paths Specified: " + inputPathString + " " + intermediatePath + " " + outputPathString);
+                intermediatePath = getConf().get(INTERMEDIATE_OUTPUT_PATH),
+                outputPathString = getConf().get(FINAL_OUTPUT_PATH);
+        LOGGER.log(Level.INFO, "Input And Output Paths Specified: " + inputPathString + " " + intermediatePath + " " + outputPathString);
 
         Job countJob = Job.getInstance(getConf(), "Count Job");
         countJob.setJarByClass(WordCount.class);

@@ -1,3 +1,5 @@
+import matenumbers.FindMate.*;
+import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 
@@ -36,6 +38,20 @@ public class MapReduceTests {
     }
 
     @Test
+    public void testFindMateMap() throws IOException {
+        new MapDriver<LongWritable, Text, IntWritable, IntWritable>(new FindMateMapper())
+                .withInput(new LongWritable(0) ,new Text("1"))
+                .withInput(new LongWritable(0) ,new Text("17"))
+                .withInput(new LongWritable(0) ,new Text("148"))
+                .withInput(new LongWritable(0) ,new Text("150"))
+                .withOutput(new IntWritable(1), new IntWritable(1))
+                .withOutput(new IntWritable(17), new IntWritable(17))
+                .withOutput(new IntWritable(1), new IntWritable(148))
+                .withOutput(new IntWritable(-1), new IntWritable(150))
+                .runTest();
+    }
+
+    @Test
     public void testWordCountReducer() throws IOException {
         new ReduceDriver<Text, LongWritable,Text, LongWritable>(new WordCountReducer())
                 .withInput(new Text("test") , Arrays.asList(new LongWritable(1),new LongWritable(1),new LongWritable(1)))
@@ -63,6 +79,15 @@ public class MapReduceTests {
                 .withOutput(new Text("Hello"), new LongWritable(2))
                 .withOutput(new Text("Marhaba"), new LongWritable(1))
                 .withOutput(new Text("Bonjour"), new LongWritable(1))
+                .runTest();
+    }
+
+    @Test
+    public void testFindMateReducer() throws IOException {
+        new ReduceDriver<IntWritable, IntWritable, IntWritable, IntWritable>(new FindMateReducer())
+                .withInput(new IntWritable(1), Arrays.asList(new IntWritable(1),new IntWritable(148)))
+                .withInput(new IntWritable(5), Arrays.asList(new IntWritable(5), new IntWritable(5)))
+                .withOutput(new IntWritable(1), new IntWritable(148))
                 .runTest();
     }
 }

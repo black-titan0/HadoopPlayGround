@@ -8,7 +8,7 @@ import org.apache.hadoop.mapreduce.Reducer;
 import java.io.IOException;
 
 public class ReverseSort {
-    public static class ReverseSortMapper extends Mapper<Text, Text, LongWritable, Text>{
+    public static class ReverseSortMapper extends Mapper<Text, Text, LongWritable, Text> {
         @Override
         public void map(Text key, Text value, Mapper<Text, Text, LongWritable, Text>.Context context) throws IOException, InterruptedException {
             int number = Integer.parseInt(value.toString().replaceAll("\\s+", ""));
