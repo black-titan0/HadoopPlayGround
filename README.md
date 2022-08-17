@@ -1,3 +1,3 @@
 # HadoopReverseWordCount
 
-Simple MapReduce program which counts words in a document and sort the words from most frequent to least frequent
+Simple MapReduce programs written in Java and using Hadoop framework
