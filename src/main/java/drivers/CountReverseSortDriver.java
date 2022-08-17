@@ -11,6 +11,7 @@ import org.apache.hadoop.mapreduce.lib.input.KeyValueTextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
+import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import reversesort.ReverseSort;
@@ -20,17 +21,23 @@ import wordcount.WordCount;
 import wordcount.WordCount.WordCountMapper;
 import wordcount.WordCount.WordCountReducer;
 
+import static constants.IOConstants.*;
+
 public class CountReverseSortDriver extends Configured implements Tool {
 
+    public static void main(String[] args) throws Exception {
+        LOGGER.log(Level.INFO, "Program Started!");
+        int res = ToolRunner.run(new CountReverseSortDriver(), args);
+        System.exit(res);
+    }
+    static final Logger LOGGER = Logger.getLogger(CountReverseSortDriver.class);
     @Override
     public int run(String[] strings) throws Exception {
-
-        final Logger LOGGER = Logger.getLogger(CountReverseSortDriver.class);
         LOGGER.log(Level.INFO, "CountReverseSortDriver Started!");
 
-        String inputPathString = strings[0],
-                intermediatePath = strings[1],
-                outputPathString = strings[2];
+        String inputPathString = getConf().get(INPUT_PATH),
+                intermediatePath =  getConf().get(INTERMEDIATE_OUTPUT_PATH),
+                outputPathString =  getConf().get(FINAL_OUTPUT_PATH);
         LOGGER.log(Level.INFO, "Input Paths Specified: " + inputPathString + " " + intermediatePath + " " + outputPathString);
 
         Job countJob = Job.getInstance(getConf(), "Count Job");
