@@ -35,7 +35,6 @@ public class FindMateNumbersDriver extends Configured implements Tool {
         LOGGER.log(Level.INFO, "Input And Output Paths Specified: " + inputPathString + " " + outputPathString);
 
         int goal = Integer.parseInt(getConf().get(GOAL_VALUE));
-        FindMate.introduceGoal(goal);
         LOGGER.log(Level.INFO, "Goal" + goal + " introduced to  job");
 
         Job findMateJob = Job.getInstance(getConf(), "Find Mate Job");

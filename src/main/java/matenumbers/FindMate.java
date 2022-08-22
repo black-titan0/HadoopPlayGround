@@ -1,5 +1,6 @@
 package matenumbers;
 
+import constants.IOConstants;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
@@ -11,16 +12,17 @@ import java.io.IOException;
 public class FindMate {
     private static int GOAL = 60015625;
 
-    public static void introduceGoal(int introduceGoal) {
-        FindMate.GOAL = introduceGoal;
-    }
-
     public static class FindMateMapper extends Mapper<LongWritable, Text, IntWritable, IntWritable> {
         @Override
         protected void map(LongWritable key, Text value, Mapper<LongWritable, Text, IntWritable, IntWritable>.Context context) throws IOException, InterruptedException {
             int parsedValue = Integer.parseInt(value.toString());
             int mate = GOAL - parsedValue;
             context.write(new IntWritable(Math.min(parsedValue, mate)), new IntWritable(parsedValue));
+        }
+
+        @Override
+        protected void setup(Mapper<LongWritable, Text, IntWritable, IntWritable>.Context context) throws IOException, InterruptedException {
+            GOAL = context.getConfiguration().getInt(IOConstants.GOAL_VALUE, 0);
         }
     }
 
@@ -40,6 +42,11 @@ public class FindMate {
                 }
             }
         }
+
+        @Override
+        protected void setup(Reducer<IntWritable, IntWritable, IntWritable, IntWritable>.Context context) throws IOException, InterruptedException {
+            GOAL = context.getConfiguration().getInt(IOConstants.GOAL_VALUE, 0);
+        }
     }
 
     public static class FindMateCombiner extends Reducer<IntWritable, IntWritable, IntWritable, IntWritable> {
@@ -58,6 +65,10 @@ public class FindMate {
                     }
                 }
             }
+        }
+        @Override
+        protected void setup(Reducer<IntWritable, IntWritable, IntWritable, IntWritable>.Context context) throws IOException, InterruptedException {
+            GOAL = context.getConfiguration().getInt(IOConstants.GOAL_VALUE, 0);
         }
     }
 }

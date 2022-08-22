@@ -25,10 +25,13 @@ import static constants.IOConstants.*;
 
 public class CountReverseSortDriver extends Configured implements Tool {
 
+    /*public static void main(String[] args) {
+
+    }*/
     public static void main(String[] args) throws Exception {
         LOGGER.log(Level.INFO, "Program Started!");
         int res = ToolRunner.run(new CountReverseSortDriver(), args);
-        System.exit(res);
+        /*return res;*/
     }
 
     static final Logger LOGGER = Logger.getLogger(CountReverseSortDriver.class);
