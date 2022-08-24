@@ -11,31 +11,28 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static constants.IOConstants.*;
 
 
 public class FindMateNumbersDriver extends Configured implements Tool {
 
-    public static final Logger LOGGER = Logger.getLogger(FindMateNumbersDriver.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(FindMateNumbersDriver.class);
 
     public static void main(String[] args) throws Exception {
-        LOGGER.log(Level.INFO, "Program Started!");
+        LOGGER.info("Program Started!");
         int res = ToolRunner.run(new FindMateNumbersDriver(), args);
         System.exit(res);
     }
 
     @Override
     public int run(String[] strings) throws Exception {
-        LOGGER.log(Level.INFO, "FindMateNumbersDriver Started!");
+        LOGGER.info("FindMateNumbersDriver Started!");
         String inputPathString = getConf().get(INPUT_PATH),
                 outputPathString = getConf().get(FINAL_OUTPUT_PATH);
-        LOGGER.log(Level.INFO, "Input And Output Paths Specified: " + inputPathString + " " + outputPathString);
-
-        int goal = Integer.parseInt(getConf().get(GOAL_VALUE));
-        LOGGER.log(Level.INFO, "Goal" + goal + " introduced to  job");
+        LOGGER.info("Input And Output Paths Specified: {} {}" , inputPathString , outputPathString);
 
         Job findMateJob = Job.getInstance(getConf(), "Find Mate Job");
         findMateJob.setJarByClass(FindMate.class);
@@ -51,7 +48,7 @@ public class FindMateNumbersDriver extends Configured implements Tool {
         FileInputFormat.addInputPath(findMateJob, new Path(inputPathString));
         FileOutputFormat.setOutputPath(findMateJob, new Path(outputPathString));
 
-        LOGGER.log(Level.INFO, "FindMate Has Been Configured Successfully!");
+        LOGGER.info("FindMate Has Been Configured Successfully!");
         boolean success = findMateJob.waitForCompletion(true);
         return (success) ? 1 : 0;
     }

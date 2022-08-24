@@ -12,8 +12,9 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import reversesort.ReverseSort;
 import reversesort.ReverseSort.ReverseSortMapper;
 import reversesort.ReverseSort.ReverseSortReducer;
@@ -25,25 +26,22 @@ import static constants.IOConstants.*;
 
 public class CountReverseSortDriver extends Configured implements Tool {
 
-    /*public static void main(String[] args) {
+    static final Logger LOGGER = LoggerFactory.getLogger(CountReverseSortDriver.class);
 
-    }*/
     public static void main(String[] args) throws Exception {
-        LOGGER.log(Level.INFO, "Program Started!");
+        LOGGER.info("Program Started!");
         int res = ToolRunner.run(new CountReverseSortDriver(), args);
         /*return res;*/
     }
 
-    static final Logger LOGGER = Logger.getLogger(CountReverseSortDriver.class);
-
     @Override
     public int run(String[] strings) throws Exception {
-        LOGGER.log(Level.INFO, "CountReverseSortDriver Started!");
+        LOGGER.info("CountReverseSortDriver Started!");
 
         String inputPathString = getConf().get(INPUT_PATH),
                 intermediatePath = getConf().get(INTERMEDIATE_OUTPUT_PATH),
                 outputPathString = getConf().get(FINAL_OUTPUT_PATH);
-        LOGGER.log(Level.INFO, "Input And Output Paths Specified: " + inputPathString + " " + intermediatePath + " " + outputPathString);
+        LOGGER.info("Input And Output Paths Specified: {} {} {}", inputPathString, intermediatePath, outputPathString);
 
         Job countJob = Job.getInstance(getConf(), "Count Job");
         countJob.setJarByClass(WordCount.class);
@@ -60,16 +58,16 @@ public class CountReverseSortDriver extends Configured implements Tool {
         FileInputFormat.addInputPath(countJob, new Path(inputPathString));
         FileOutputFormat.setOutputPath(countJob, new Path(intermediatePath));
 
-        LOGGER.log(Level.INFO, "CountJob Has Been Configured Successfully!");
+        LOGGER.info("CountJob Has Been Configured Successfully!");
         boolean success = countJob.waitForCompletion(true);
 
         if (success) {
-            LOGGER.log(Level.INFO, "CountJob Has Been Executed Successfully!");
+            LOGGER.info("CountJob Has Been Executed Successfully!");
             Job sortJob = Job.getInstance(getConf(), "Sort Job");
             sortJob.setInputFormatClass(KeyValueTextInputFormat.class);
 
             sortJob.setSortComparatorClass(ReverseLongWritableComparator.class);
-            LOGGER.log(Level.INFO, "Sort Comparator Changed to : " + (sortJob.getSortComparator().getClass().getName()));
+            LOGGER.debug("Sort Comparator Changed to : {} ", (sortJob.getSortComparator().getClass().getName()));
             sortJob.setJarByClass(ReverseSort.class);
             sortJob.setMapperClass(ReverseSortMapper.class);
             sortJob.setReducerClass(ReverseSortReducer.class);
@@ -83,10 +81,10 @@ public class CountReverseSortDriver extends Configured implements Tool {
             FileInputFormat.addInputPath(sortJob, new Path(intermediatePath));
             FileOutputFormat.setOutputPath(sortJob, new Path(outputPathString));
 
-            LOGGER.log(Level.INFO, "SortJob Has Been Configured Successfully!");
+            LOGGER.info("SortJob Has Been Configured Successfully!");
             success = sortJob.waitForCompletion(true);
             if (success)
-                LOGGER.log(Level.INFO, "SortJob Has Been Executed Successfully!");
+                LOGGER.info("SortJob Has Been Executed Successfully!");
         }
         return (success) ? 1 : 0;
     }
